@@ -1,7 +1,5 @@
-package routingtool;
+package routingtool.compontents;
 
-import routingtool.compontents.PokemonParty;
-import routingtool.compontents.Battle;
 
 public class Event {
 	

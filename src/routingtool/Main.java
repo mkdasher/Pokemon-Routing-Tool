@@ -1,17 +1,13 @@
 package routingtool;
 
-import java.util.List;
-import routingtool.pokemon.Pokemon;
-import routingtool.Event;
+import routingtool.gui.MainWindow;
 
 public class Main {
-
-	/**
-	 * @param args
-	 */
+	
 	public static void main(String[] args) {
-		
+		ToolEngine toolEngine = new ToolEngine();
+		Controller controller = new Controller(toolEngine);
+		new MainWindow(controller);
 	}
-	private List<Event> eventList;
-	private List<Pokemon> initialPokemon;
+	
 }
