@@ -1,5 +1,5 @@
 package routingtool.compontents;
 
-public interface Battle {
+public class PokemonUsed {
 
 }

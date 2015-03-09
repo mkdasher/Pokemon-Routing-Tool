@@ -1,5 +1,7 @@
 package routingtool;
 
+import routingtool.observers.EventListContainerObserver;
+
 public class Controller {
 	private ToolEngine e;
 	public Controller(ToolEngine e) {
@@ -7,15 +9,18 @@ public class Controller {
 	}
 	
 	public void requestLoadFile(String filePath) {
-		e.loadFile(filePath);
+		this.e.loadFile(filePath);
 	}
 
-
 	public void requestSaveFile(String filePath) {
-		e.saveFile(filePath);
+		this.e.saveFile(filePath);
 	}
 
 	public void requestQuit() {
-		e.quit();
+		this.e.quit();
+	}
+	
+	public void addEventListContainerObserver(EventListContainerObserver i) {
+		this.e.addEventListContainerObserver(i);
 	}
 }

@@ -1,5 +1,9 @@
 package routingtool.gui;
 
+import routingtool.Controller;
+import routingtool.observers.EventListContainerObserverHelper;
+import routingtool.compontents.Event;
+
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.util.List;
@@ -16,54 +20,34 @@ public class EventGridList extends JPanel{
 	final DefaultTableModel model = new DefaultTableModel(); 
 	private final JTable table;
 	
-	public EventGridList(){
+	public EventGridList(final Controller c){
 		this.setLayout(new BorderLayout());
 		this.setBorder(new TitledBorder("Trainer List"));
 		this.add(new ToolBar(), BorderLayout.NORTH);
 		model.addColumn("Item ID"); 
 		model.addColumn("Item Description"); 
-		this.table = new JTable(model);
-		this.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
-			private static final long serialVersionUID = 1L;
-			{	
-				this.setPreferredSize(new Dimension(0, 0)); //así se limita a ocupar lo que le dejen		
-			}
-		},BorderLayout.CENTER);
-	}
-	
-	/*
-	 public RobotInfo(final Controller c) {
-		this.setLayout(new BorderLayout());
-		this.setBorder(new TitledBorder("Robot Info"));
-		this.add(new RobotFuelAndPointsStatus(c), BorderLayout.NORTH);
-		model.addColumn("Item ID"); 
-		model.addColumn("Item Description"); 
-		this.table = new JTable(model) {
+		this.table = new JTable(model){
 			private static final long serialVersionUID = 1L;
 			{
-				c.addItemContainerObserver(new ItemContainerObserverHelper() {
+				c.addEventListContainerObserver(new EventListContainerObserverHelper() {
 					private Thread changeThread;
 					@Override
-					public void inventoryChange(final List<Item> inventory) {
-						//sólo si podemos lo interrumpimos, si no, no es necesario
+					public void eventListChange(final List<Event> eventList) {
+						//we can only change if we can interrupt, else it's not neccesary
 						if (changeThread != null && changeThread.isAlive())
 							changeThread.interrupt();
-						//así aseguramos que sólo se cambie la tabla de una vez en una vez, porque estaba dando
-						//errores rojos feos en la consola
+						//avoiding to update the table multiple times in a few miliseconds (else we can get errors)
 						(changeThread = new Thread() {
 							public void run() {
-								//si tras 25 ms no ha cambiado el inventario, lo actualizamos
+								//if the table is changed before 25 milisecs, we don't update it yet.
 								try {
 									Thread.sleep(25);
-								} catch (InterruptedException e) {
-									//si nos interrumpen por otro cambio, pasamos de actualizar y ya lo hará el siguiente
-									return;
-								}
+								} catch (InterruptedException e) {return;}
 								
 								model.getDataVector().removeAllElements();
 								model.fireTableDataChanged();
-								for (int i = 0; i < inventory.size(); i++) 
-									model.addRow(new Object[]{inventory.get(i).getId(),inventory.get(i).toString()});
+								for (int i = 0; i < eventList.size(); i++) 
+									//model.addRow(new Object[]{eventList.get(i).getId(),eventList.get(i).toString()});
 								model.fireTableDataChanged();
 							}
 						}).start();
@@ -72,14 +56,11 @@ public class EventGridList extends JPanel{
 				});
 			}	
 		};
-		
 		this.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
 			private static final long serialVersionUID = 1L;
 			{	
 				this.setPreferredSize(new Dimension(0, 0)); //así se limita a ocupar lo que le dejen		
 			}
 		},BorderLayout.CENTER);
-		this.addKeyController();
 	}
-	 */
 }

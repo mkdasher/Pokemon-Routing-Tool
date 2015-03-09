@@ -1,40 +1,35 @@
 package routingtool.compontents;
 
 
-public class Event {
+public abstract class Event {
 	
-	/**
-	 * Default Constructor
-	 */
-	public Event(){
-		this.party = null;
-		this.battle = null;
+
+	public Event(EventType eventType){
+		
 	}
 	
-	/**
-	 * Constructor
-	 * @param party
-	 * @param battle
-	 */
-	public Event(PokemonParty party, Battle battle){
-		this.party = party;
-		this.battle = battle;
-	}
 	
+	/**
+	 * updates PokemonParty.pokemonListAfter from the data obtained from the event.
+	 * Abstract method, implemented by it's subclasses.
+	 */
+	public abstract void updatePokemonListAfter();
+	
+	/**
+	 * sets Pokemon party
+	 * @param p
+	 */
 	public void setParty(PokemonParty p){
         this.party = p;
     }
-    public void setBattle(Battle b)
-    {
-        this.battle = b;
-    }
+	
+	/**
+	 * gets Pokemon party
+	 * @return
+	 */
     public PokemonParty getParty(){
         return this.party;
     }
-    public Battle getBattle(){
-        return this.battle;
-    }
-    
 	private PokemonParty party;
-	private Battle battle;
+	public EventType eventType;
 }

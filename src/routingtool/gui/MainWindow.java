@@ -28,8 +28,8 @@ public class MainWindow extends JFrame {
 		super("Pokemon Routing Tool");
 		this.setIconImage(JFRAME_ICON.getImage());
 		this.controller = c;
-		this.eventGridList = new EventGridList();
-		this.eventInfo = new EventInfo();
+		this.eventGridList = new EventGridList(c);
+		this.eventInfo = new EventInfo(c);
 		this.add(new MainPanel(), BorderLayout.CENTER);
 		this.setJMenuBar(new MenuBar(controller));
 		this.setParams();
