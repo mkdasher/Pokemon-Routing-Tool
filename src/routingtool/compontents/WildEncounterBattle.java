@@ -13,7 +13,7 @@ public class WildEncounterBattle extends Event{
 	@Override
 	public void updatePokemonListAfter() {
 		// TODO Auto-generated method stub
-		
 	}
 
+	private PokemonUsed pokemonUsed;
 }

@@ -12,10 +12,11 @@ public class SingleTrainerBattle extends TrainerBattle {
 		this.trainer = trainer;
 	}
 
-	private Trainer trainer;
-
 	@Override
 	public void updatePokemonListAfter() {
 		
 	}
+	
+	private Trainer trainer;
+	private PokemonUsed pokemonUsed;
 }

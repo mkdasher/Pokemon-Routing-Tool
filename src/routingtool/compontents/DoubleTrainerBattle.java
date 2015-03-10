@@ -14,11 +14,13 @@ public class DoubleTrainerBattle extends TrainerBattle{
 		this.trainer2 = trainer2;
 	}
 	
-	private Trainer trainer1;
-	private Trainer trainer2;
-	
 	@Override
 	public void updatePokemonListAfter() {
 		
 	}
+	
+	private Trainer trainer1;
+	private Trainer trainer2;
+	private PokemonUsed pokemonUsed1;
+	private PokemonUsed pokemonUsed2;
 }

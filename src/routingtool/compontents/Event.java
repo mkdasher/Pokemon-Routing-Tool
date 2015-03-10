@@ -5,7 +5,7 @@ public abstract class Event {
 	
 
 	public Event(EventType eventType){
-		
+		this.eventType = eventType;
 	}
 	
 	
