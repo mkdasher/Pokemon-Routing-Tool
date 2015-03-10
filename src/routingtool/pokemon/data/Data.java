@@ -17,6 +17,14 @@ public abstract class Data {
 	public String toString(){
 		return this.name;
 	}
+	
+	/**
+	 * Same than toString, but I often prefer to use this method.
+	 * @return
+	 */
+	public String getName(){
+		return this.name;
+	}
 		
 	protected int n;
 	private String name;

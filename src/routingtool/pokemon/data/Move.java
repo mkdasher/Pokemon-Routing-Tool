@@ -1,5 +1,8 @@
 package routingtool.pokemon.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import routingtool.util.CSVFileReader;
 
 public class Move extends Data {
@@ -13,12 +16,43 @@ public class Move extends Data {
 		 this.power = Integer.parseInt(data[5]);
 		 this.accuracy = Integer.parseInt(data[6]);
 	}
+	
+	/**
+	 * Private constructor. For getCopy().
+	 * @param n
+	 * @param name
+	 * @param moveType
+	 * @param moveCategory
+	 * @param pp
+	 * @param power
+	 * @param accuracy
+	 */
+	private Move(int n, String name, PokemonType moveType, MoveCategory moveCategory, int pp, int power, int accuracy){
+		super(n, name);
+		this.moveType = moveType;
+		this.moveCategory = moveCategory;
+		this.pp = pp;
+		this.power = power;
+		this.accuracy = accuracy;
+	}
 
 	
 	public static String findName(int n){
 		CSVFileReader fileReader = new CSVFileReader();
 		String[] data = fileReader.getLine(n, "./res/database/moves.csv");
 		return data[1];
+	}
+	
+	/**
+	 * Gets list of all moves
+	 * @return
+	 */
+	public static List<Move> getList(){
+		List<Move> list = new ArrayList<Move>();
+		for (int i = 0; i <= MOVE_N; i++){
+			list.add(new Move(i));
+		}
+		return list;
 	}
 	
 	public int getPower(){
@@ -42,9 +76,11 @@ public class Move extends Data {
 	}
 	
 	public Move getCopy(){
-		return new Move(n);
+		return new Move(this.n, this.getName(), this.moveType.getCopy(), this.moveCategory, this.pp, this.power, this.accuracy);
 	}
-
+	
+	public static final int MOVE_N = 467;
+	
 	private PokemonType moveType;
 	private MoveCategory moveCategory;
 	private int pp;

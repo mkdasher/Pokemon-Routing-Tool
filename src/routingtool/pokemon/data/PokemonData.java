@@ -1,5 +1,8 @@
 package routingtool.pokemon.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import routingtool.util.CSVFileReader;
 
 public class PokemonData extends Data {
@@ -32,15 +35,43 @@ public class PokemonData extends Data {
 		 this.expType = new ExperienceType(data[1]);
 	}
 	
+	/**
+	 * private Constructor. For getCopy()
+	 * @param n
+	 */
+	private PokemonData(int n, String name, StatPack baseStat, int exp, StatPack EV, PokemonType type1, PokemonType type2, ExperienceType expType){
+		super(n,name);
+		this.baseStat = baseStat;
+		this.exp = exp;
+		this.EV = EV;
+		this.type1 = type1;
+		this.type2 = type2;
+		this.expType = expType;
+	}
+	
 	public static String findName(int n){
 		CSVFileReader fileReader = new CSVFileReader();
 		String[] data = fileReader.getLine(n, "./res/database/pokemon.csv");
 		return data[1];
 	}
 	
-	public String getName(){
-		return this.toString();
+	public PokemonData getCopy(){
+		return new PokemonData(n, this.getName(), this.baseStat.getCopy(), this.exp, this.EV.getCopy(), this.type1.getCopy(), this.type2.getCopy(), this.expType.getCopy());
 	}
+	
+	/**
+	 * Gets list of all Pokemon
+	 * @return
+	 */
+	public static List<PokemonData> getList(){
+		List<PokemonData> list = new ArrayList<PokemonData>();
+		for (int i = 0; i <= POKEMON_N; i++){
+			list.add(new PokemonData(i));
+		}
+		return list;
+	}
+	
+	public static int POKEMON_N = 649;
 	
     public StatPack baseStat;
     public int exp;

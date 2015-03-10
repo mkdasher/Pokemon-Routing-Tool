@@ -11,6 +11,12 @@ public class CSVFileReader {
 		
 	}
 
+	/**
+	 * Gets line. CSVFileReader creates the Stream
+	 * @param n
+	 * @param path
+	 * @return
+	 */
 	public String[] getLine(int n, String path) {
 		FileInputStream fis = null;
 		BufferedReader br;

@@ -1,5 +1,8 @@
 package routingtool.pokemon.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ExperienceType extends Data {
 	public ExperienceType(int n){
 		super(n, toStr[n]);
@@ -10,29 +13,43 @@ public class ExperienceType extends Data {
 	}
 	
 	public static int getTypeID(String type){
-		for (int i = 0; i < toStr.length; i++){
+		for (int i = 0; i <= EXPTYPE_N; i++){
 			if (type.equals(toStr[i])){
 				return i;
 			}
 		}
-		return 6; //none
+		return 0; //none
 	}
 	
 	public int experience(int i)
     {
         switch (this.n)
         {
-            case 0: return fluctuatingExp[i];
-            case 1: return slowExp[i];
-            case 2: return mediumSlowExp[i];
-            case 3: return mediumFastExp[i];
-            case 4: return fastExp[i];
-            case 5: return erraticExp[i];
-            default: return -1;
+            case 1: return fluctuatingExp[i];
+            case 2: return slowExp[i];
+            case 3: return mediumSlowExp[i];
+            case 4: return mediumFastExp[i];
+            case 5: return fastExp[i];
+            case 6: return erraticExp[i];
+            default: return -1; //NONE
         }
     }
 	
+	public static List<ExperienceType> getList(){
+		List<ExperienceType> list = new ArrayList<ExperienceType>();
+		for (int i = 0; i <= EXPTYPE_N; i++){
+			list.add(new ExperienceType(i));
+		}
+		return list;
+	}
+	
+	public ExperienceType getCopy(){
+		return new ExperienceType(n);
+	}
+	
 	//Data
+	
+	public static final int EXPTYPE_N = 6;
 	
 	private final static int[] fluctuatingExp = {0, 4, 13, 32, 65, 112, 178, 276, 393, 540, 745, 967, 1230, 1591, 1957, 2457, 
         3046, 3732, 4526, 5440, 6482, 7666, 9003, 10506, 12187, 14060, 16140, 18439, 
@@ -97,6 +114,6 @@ public class ExperienceType extends Data {
         491346, 501878, 513934, 526049, 536557, 548720, 560922, 571333, 583539, 591882, 
         600000};
 	
-	private final static String[] toStr = {"Fluctuating","Slow","Medium Slow",
-		"Medium Fast","Fast","Erratic","None"};
+	private final static String[] toStr = {"None", "Fluctuating","Slow","Medium Slow",
+		"Medium Fast","Fast","Erratic"};
 }

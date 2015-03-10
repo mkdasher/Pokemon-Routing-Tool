@@ -1,15 +1,30 @@
 package routingtool.pokemon.data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import routingtool.util.CSVFileReader;
 
 public class Ability extends Data{
+	/**
+	 * Public constructor. Creates instance from ID. (Gets name / description from file).
+	 * @param n
+	 */
 	public Ability(int n){
 		super(n, findName(n));
 		CSVFileReader fileReader = new CSVFileReader();
 		String[] data = fileReader.getLine(n, "./res/database/abilities.csv");
 		this.description = data[2];
+	}
+	
+	/**
+	 * Private constructor. For getCopy()
+	 * @param n
+	 * @param name
+	 */
+	private Ability(int n, String name, String description){
+		super(n, name);
+		this.description = description;
 	}
 	
 	private static String findName(int n){
@@ -18,12 +33,20 @@ public class Ability extends Data{
 		return data[1];
 	}
 
-	public static List<Data> getList(){
-		return null;
+	/**
+	 * Gets list of all abilities
+	 * @return
+	 */
+	public static List<Ability> getList(){
+		List<Ability> list = new ArrayList<Ability>();
+		for (int i = 0; i <= ABILITY_N; i++){
+			list.add(new Ability(i));
+		}
+		return list;
 	}
 
 	public Ability getCopy() {
-		return new Ability(n);
+		return new Ability(n, this.getName(), this.description);
 	}
 	
 	public String getDescription(){
@@ -31,4 +54,6 @@ public class Ability extends Data{
 	}
 	
 	private String description;
+	
+	public static final int ABILITY_N = 164;
 }

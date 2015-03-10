@@ -1,5 +1,8 @@
 package routingtool.pokemon.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Nature{
 	
 	public Nature(int n)
@@ -46,6 +49,18 @@ public class Nature{
 	 */
 	public Nature getCopy() {
 		return new Nature(this.n);
+	}
+	
+	/**
+	 * Gets list of all natures
+	 * @return
+	 */
+	public static List<Nature> getList(){
+		List<Nature> list = new ArrayList<Nature>();
+		for (int i = 0; i < NATURE_N; i++){ // < instead of <= cause there's no NONE nature
+			list.add(new Nature(i));
+		}
+		return list;
 	}
 	
 	@Override
