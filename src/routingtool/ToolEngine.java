@@ -1,10 +1,14 @@
 package routingtool;
 
-import java.util.List;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 
-import routingtool.compontents.Event;
+import routingtool.components.Event;
 import routingtool.observers.EventListContainerObserver;
-import routingtool.pokemon.Pokemon;
+import routingtool.util.FileUtil;
 
 public class ToolEngine {
 	
@@ -13,34 +17,67 @@ public class ToolEngine {
 	public ToolEngine(){
 		this.elc = new EventListContainer();
 	}
-		
+	
 	/**
-	 * Updates eventList
+	 * Calls eventSelectionChange
 	 */
-	public void updateList(){
-		this.elc.updateList(0);
+	public void onEventGridSelectionChanged(int index) {
+		this.elc.onEventGridSelectionChanged(index);
 	}
 	
 	/**
-	 * Updates eventList from a List index
+	 * Adds event
+	 * @param e
+	 */
+	public void addEvent(Event e) {
+		this.elc.addEvent(e);
+	}
+	
+	/**
+	 * Delete event
+	 * @param n
+	 */
+	public void deleteEvent(int n) {
+		this.elc.deleteEvent(n);
+	}
+	
+	/**
+	 * Gets event
+	 * @param n
+	 */
+	public Event getEvent(int n) {
+		return this.elc.getEvent(n);
+	}
+	
+	/**
+	 * Gets event list size
+	 * @return
+	 */
+	public int getEventListSize() {
+		return this.elc.size();
+	}
+	
+	/**
+	 * Replaces event at the specified position (index) with an specified event (ev)
+	 * @param ev
 	 * @param index
 	 */
-	public void updateList(int index){
-		this.elc.updateList(index);
+	public void editEvent(Event ev, int index) {
+		this.elc.editEvent(ev,index);
 	}
-	
+		
 	/****************************************/
 	public void loadFile(String filePath) {
-		//TODO
+		this.elc.setEventList(FileUtil.loadFile(filePath));
 	}
 	public void saveFile(String filePath) {
-		//TODO
+		FileUtil.saveFile(filePath, this.elc.getEventList());
 	}
 	public void quit() {
 		System.exit(0);		
 	}
 
-	public void addEventListContainerObserver(EventListContainerObserver i) {
-		this.elc.addObserver(i);
+	public void addEventListContainerObserver(EventListContainerObserver observer) {
+		this.elc.addObserver(observer);
 	}
 }

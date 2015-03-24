@@ -1,7 +1,7 @@
 package routingtool.pokemon.data;
 
 
-public abstract class Data {
+public abstract class Data implements Comparable<Data>{
 	
 	//Data without database
 	public Data(int n, String name){
@@ -24,6 +24,11 @@ public abstract class Data {
 	 */
 	public String getName(){
 		return this.name;
+	}
+	
+	@Override
+	public int compareTo(Data other) {
+		return this.name.compareTo(other.getName());
 	}
 		
 	protected int n;

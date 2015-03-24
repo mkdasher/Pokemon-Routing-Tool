@@ -1,6 +1,7 @@
 package routingtool.pokemon.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class PokemonType extends Data{
@@ -21,9 +22,14 @@ public class PokemonType extends Data{
 		return 18; //unknown
 	}
 	
+	public boolean isNone(){
+		return this.getName().equals("None");
+	}
+	
 	public PokemonType getCopy(){
 		return new PokemonType(this.n);
 	}
+	
 		
 	private final static String[] toStr = {"Fighting","Flying","Poison","Ground",
 		 "Rock","Bug","Ghost","Steel", "Fire","Water","Grass","Electric",
@@ -38,6 +44,7 @@ public class PokemonType extends Data{
 		for (int i = 0; i < POKEMONTYPE_N; i++){ // < instead of <= cause there's no "none" type at the beginning. List doesn't include Unknown.
 			list.add(new PokemonType(i));
 		}
+		Collections.sort(list);
 		return list;
 	}
 	

@@ -44,7 +44,7 @@ public class StatPack {
         }
     }
 
-    public void setStat(short i, short value)
+    public void setStat(int i, int value)
     {
         switch (i)
         {

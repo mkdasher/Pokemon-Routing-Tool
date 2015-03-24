@@ -1,6 +1,7 @@
 package routingtool.pokemon.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class ExperienceType extends Data {
@@ -40,6 +41,7 @@ public class ExperienceType extends Data {
 		for (int i = 0; i <= EXPTYPE_N; i++){
 			list.add(new ExperienceType(i));
 		}
+		Collections.sort(list);
 		return list;
 	}
 	

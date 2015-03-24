@@ -10,9 +10,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
+import javax.swing.filechooser.FileFilter;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import routingtool.Controller;
-import routingtool.ToolEngine;
 
 
 public class MenuBar extends JMenuBar {
@@ -27,6 +28,9 @@ public class MenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JFileChooser fc = new JFileChooser();
+				FileFilter ff = new FileNameExtensionFilter("Pokemon Routing Tool File (.prf)", "prf");
+				fc.addChoosableFileFilter(ff);
+				fc.setFileFilter(ff);
 				int returnVal = fc.showOpenDialog(openMenuItem);
 				String filePath;
 				if (returnVal != JFileChooser.APPROVE_OPTION) {
@@ -43,7 +47,9 @@ public class MenuBar extends JMenuBar {
 		saveMenuItem.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				JFileChooser fc = new JFileChooser();
+				JFileChooser fc = new JFileChooser();FileFilter ff = new FileNameExtensionFilter("Pokemon Routing Tool File (.prf)", "prf");
+				fc.addChoosableFileFilter(ff);
+				fc.setFileFilter(ff);
 				int returnVal = fc.showSaveDialog(saveMenuItem);
 				String filePath;
 				if (returnVal != JFileChooser.APPROVE_OPTION) {

@@ -1,6 +1,7 @@
 package routingtool.pokemon.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import routingtool.util.CSVFileReader;
@@ -68,6 +69,7 @@ public class PokemonData extends Data {
 		for (int i = 0; i <= POKEMON_N; i++){
 			list.add(new PokemonData(i));
 		}
+		Collections.sort(list);
 		return list;
 	}
 	

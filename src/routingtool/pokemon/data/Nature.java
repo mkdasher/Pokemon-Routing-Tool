@@ -3,15 +3,31 @@ package routingtool.pokemon.data;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Nature{
+public class Nature extends Data{
 	
 	public Nature(int n)
     {
+		super(n, toStr[n]);
         if (n >= 0 && n < NATURE_N)
         {
             this.setNature(n);
         }
     }
+	
+	public Nature(String nat){
+		super(getTypeID(nat), nat);
+	}
+	
+	public static int getTypeID(String nat){
+		for (int i = 0; i <= NATURE_N; i++){
+			if (nat.equals(toStr[i])){
+				return i;
+			}
+		}
+		//Nature not found, sets to Hardy by default
+		nat = "Hardy";
+		return 0;
+	}
 	
 	public void setNature(int n)
     {
@@ -63,16 +79,10 @@ public class Nature{
 		return list;
 	}
 	
-	@Override
-	public String toString(){
-		return toStr[n];
-	}
-	
 	private final static String[] toStr = {"Hardy", "Lonely", "Brave", "Adamant", "Naughty", "Bold", "Docile", "Relaxed",
 		"Impish", "Lax", "Timid", "Hasty", "Serious", "Jolly", "Naive", "Modest", "Mild", "Quiet",
 		"Bashful", "Rash", "Calm", "Gentle", "Sassy", "Careful", "Quirky"};
 	
 	private final static int NATURE_N = 25;
-	public int n;
 	private double[] natureBoost;
 }

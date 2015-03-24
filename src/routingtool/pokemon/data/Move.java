@@ -1,6 +1,7 @@
 package routingtool.pokemon.data;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import routingtool.util.CSVFileReader;
@@ -15,6 +16,7 @@ public class Move extends Data {
 		 this.pp = Integer.parseInt(data[4]);
 		 this.power = Integer.parseInt(data[5]);
 		 this.accuracy = Integer.parseInt(data[6]);
+		 this.generation = Integer.parseInt(data[7]);
 	}
 	
 	/**
@@ -27,13 +29,14 @@ public class Move extends Data {
 	 * @param power
 	 * @param accuracy
 	 */
-	private Move(int n, String name, PokemonType moveType, MoveCategory moveCategory, int pp, int power, int accuracy){
+	private Move(int n, String name, PokemonType moveType, MoveCategory moveCategory, int pp, int power, int accuracy, int generation){
 		super(n, name);
 		this.moveType = moveType;
 		this.moveCategory = moveCategory;
 		this.pp = pp;
 		this.power = power;
 		this.accuracy = accuracy;
+		this.generation = generation;
 	}
 
 	
@@ -52,6 +55,7 @@ public class Move extends Data {
 		for (int i = 0; i <= MOVE_N; i++){
 			list.add(new Move(i));
 		}
+		Collections.sort(list);
 		return list;
 	}
 	
@@ -67,6 +71,10 @@ public class Move extends Data {
 		return this.accuracy;
 	}
 	
+	public int getGeneration(){
+		return this.generation;
+	}
+	
 	public MoveCategory getMoveCategory(){
 		return this.moveCategory;
 	}
@@ -76,7 +84,7 @@ public class Move extends Data {
 	}
 	
 	public Move getCopy(){
-		return new Move(this.n, this.getName(), this.moveType.getCopy(), this.moveCategory, this.pp, this.power, this.accuracy);
+		return new Move(this.n, this.getName(), this.moveType.getCopy(), this.moveCategory, this.pp, this.power, this.accuracy, this.generation);
 	}
 	
 	public static final int MOVE_N = 467;
@@ -86,4 +94,5 @@ public class Move extends Data {
 	private int pp;
 	private int power;
 	private int accuracy;
+	private int generation;
 }
