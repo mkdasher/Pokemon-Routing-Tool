@@ -11,20 +11,26 @@ import java.awt.event.ActionListener;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.TitledBorder;
 
 import routingtool.Controller;
+import routingtool.components.DoubleTrainerBattle;
 import routingtool.components.EmptyEvent;
 import routingtool.components.Event;
+import routingtool.components.EventType;
 import routingtool.components.PokemonTeam;
+import routingtool.components.PokemonUsed;
 import routingtool.components.SingleTrainerBattle;
+import routingtool.components.WildEncounterBattle;
 import routingtool.gui.components.PokemonIcon;
 import routingtool.gui.components.PokemonTypeLabel;
+import routingtool.gui.damagecalculator.DamageCalculatorDialog;
 import routingtool.observers.EventListContainerObserverHelper;
 import routingtool.pokemon.Pokemon;
 import routingtool.pokemon.data.PokemonType;
@@ -32,7 +38,8 @@ import routingtool.pokemon.data.StatPack;
 
 public class EventInfo extends JPanel{
 	private static final long serialVersionUID = 9026191378428306639L;
-	public EventInfo(Controller c){
+	public EventInfo(JFrame parent, Controller c){
+		this.parent = parent;
 		this.c = c;
 		this.currentEvent = new EmptyEvent();
 		this.currentPokemon = new Pokemon();
@@ -42,10 +49,33 @@ public class EventInfo extends JPanel{
 			@Override
 			public void eventSelectionChange(Event current){
 				currentEvent = current;
-				currentPokemon = currentEvent.getParty().getListAfter().getPokemon(0);
+				int index = 0;
+				
+				PokemonUsed pu = null;
+				if (currentEvent.getEventType() == EventType.SingleTrainerBattle){
+					SingleTrainerBattle stb = (SingleTrainerBattle) currentEvent;
+					pu = stb.getPokemonUsedList().get(0);
+				}else if (currentEvent.getEventType() == EventType.DoubleTrainerBattle){
+					DoubleTrainerBattle dtb = (DoubleTrainerBattle) currentEvent;
+					pu = dtb.getPokemonUsedList().get(0);
+				}else if (currentEvent.getEventType() == EventType.WildEncounter){
+					WildEncounterBattle we = (WildEncounterBattle) currentEvent;
+					pu = we.getPokemonUsed();
+				}
+				if (pu != null){
+					for (int i = 0; i < PokemonTeam.MAX_PKM; i++){
+						if (pu.isUsed(i)){
+							index = i;
+							break;
+						}
+					}
+				}
+
+				currentPokemon = currentEvent.getStateAfter().getTeam().getPokemon(index);
 				pkmPartyPane.setSelectedComponent(pkmPartyAfter);
 				EventInfo.this.updateCurrentEvent();
 				EventInfo.this.updateCurrentParty();
+				txtMoney.setText(String.valueOf(current.getStateAfter().getMoney()));
 				EventInfo.this.updateCurrentPokemon();
 			}
 			
@@ -73,6 +103,8 @@ public class EventInfo extends JPanel{
 		this.pkmPartyPane.addTab("Before", pkmPartyBefore);
 		this.pkmPartyPane.addTab("After", pkmPartyAfter);
 		this.pkmPartyPane.getTabComponentAt(0);
+		this.txtMoney = new JTextField();
+		this.txtMoney.setEditable(false);
 		
 		//Current Pokemon
 		this.pkmIconLabel = new JLabel(new PokemonIcon(1));
@@ -91,32 +123,32 @@ public class EventInfo extends JPanel{
 		this.lblPokemonName.setOpaque(true);
 		this.lblPokemonName.setBackground(Color.WHITE);
 		
-		this.txtExperience = new JTextArea();
+		this.txtExperience = new JTextField();
 		this.txtExperience.setEditable(false);
-		this.txtLevel = new JTextArea();
+		this.txtLevel = new JTextField();
 		this.txtLevel.setEditable(false);
-		this.txtHeldItem = new JTextArea();
+		this.txtHeldItem = new JTextField();
 		this.txtHeldItem.setEditable(false);
-		this.txtNature = new JTextArea();
+		this.txtNature = new JTextField();
 		this.txtNature.setEditable(false);
-		this.txtAbility = new JTextArea();
+		this.txtAbility = new JTextField();
 		this.txtAbility.setEditable(false);
 		
-		this.txtEV = new JTextArea[StatPack.STAT_N];
-		this.txtIV = new JTextArea[StatPack.STAT_N];
-		this.txtStat = new JTextArea[StatPack.STAT_N];
+		this.txtEV = new JTextField[StatPack.STAT_N];
+		this.txtIV = new JTextField[StatPack.STAT_N];
+		this.txtStat = new JTextField[StatPack.STAT_N];
 		for (int i = 0; i < StatPack.STAT_N; i++){
-			this.txtEV[i] = new JTextArea();
+			this.txtEV[i] = new JTextField();
 			this.txtEV[i].setEditable(false);
-			this.txtIV[i] = new JTextArea();
+			this.txtIV[i] = new JTextField();
 			this.txtIV[i].setEditable(false);
-			this.txtStat[i] = new JTextArea();
+			this.txtStat[i] = new JTextField();
 			this.txtStat[i].setEditable(false);
 		}
 		
-		this.txtMove = new JTextArea[4];
+		this.txtMove = new JTextField[4];
 		for (int i = 0; i < 4; i++){
-			this.txtMove[i] = new JTextArea();
+			this.txtMove[i] = new JTextField();
 			this.txtMove[i].setEditable(false);
 		}
 		
@@ -125,29 +157,32 @@ public class EventInfo extends JPanel{
 		this.setLayout(new BorderLayout());
 		
 		this.add(new JPanel(){
-			/**
-			 * 
-			 */
+			
 			private static final long serialVersionUID = -8768910101757685005L;
-
 			{
 				this.setLayout(new BorderLayout());
 				this.add(eventInfoPanel, BorderLayout.CENTER);
 				this.add(new JPanel(){
 					{
-					this.setBorder(new TitledBorder("Pokemon Party"));
-						this.add(pkmPartyPane);
+						this.setLayout(new BorderLayout());
+						pkmPartyPane.setBorder(new TitledBorder("Pokemon Party"));
+						this.add(pkmPartyPane, BorderLayout.CENTER);
+						this.add(new JPanel(){
+							{
+								this.setLayout(new GridLayout(1,2));
+								this.setBorder(new TitledBorder("Money after event"));
+								this.add(new JLabel("Money"));
+								this.add(txtMoney);
+							}
+						}, BorderLayout.SOUTH);
 					}
 				}, BorderLayout.SOUTH);
 			}
 		}, BorderLayout.WEST);
 		
 		this.add(new JPanel(){
-			/**
-			 * 
-			 */
+	
 			private static final long serialVersionUID = 7133290352265769708L;
-
 			{
 			this.setLayout(new BorderLayout());
 			this.setBorder(new TitledBorder("Selected Pokemon"));
@@ -165,7 +200,7 @@ public class EventInfo extends JPanel{
 									this.setBorder(BorderFactory.createLineBorder(Color.black));
 									this.setOpaque(true);
 									this.setBackground(Color.WHITE);
-									this.setLayout(new GridLayout(1,0));
+									this.setLayout(new GridLayout(1,2));
 									this.add(pkmTypeLabel1, BorderLayout.WEST);
 									pkmTypeLabel1.setHorizontalAlignment(SwingConstants.CENTER);
 									this.add(pkmTypeLabel2, BorderLayout.EAST);
@@ -253,25 +288,39 @@ public class EventInfo extends JPanel{
 		switch (this.currentEvent.getEventType()){
 		case SingleTrainerBattle:
 			this.eventInfoPanel.add(new JPanel(){
-				/**
-				 * 
-				 */
-				private static final long serialVersionUID = 2245404665999799484L;
 
+				private static final long serialVersionUID = 2245404665999799484L;
 				{
 					final SingleTrainerBattle stb = (SingleTrainerBattle) currentEvent;
 					this.setLayout(new BorderLayout());
+					this.add(new JButton("Damage Calculator"){
+						{
+							this.addActionListener(new ActionListener(){
+								@Override
+								public void actionPerformed(ActionEvent arg0) {
+									new DamageCalculatorDialog(parent, currentEvent);
+								}
+							});
+						}
+					}, BorderLayout.NORTH);
 					this.add(new JPanel(){
 						{
 							this.setLayout(new BorderLayout());
 							this.setBorder(new TitledBorder("Trainer"));
 							this.add(new JPanel(){
 								{
-									this.setLayout(new GridLayout(1,2));
+									this.setLayout(new GridLayout(2,4));
 									this.add(new JLabel("Name"));
-									this.add(new JTextArea(){
+									this.add(new JTextField(){
 										{
 											this.setText(stb.getTrainer().getName());
+											this.setEditable(false);
+										}
+									});
+									this.add(new JLabel("Money"));
+									this.add(new JTextField(){
+										{
+											this.setText(String.valueOf(stb.getMoney()));
 											this.setEditable(false);
 										}
 									});
@@ -287,19 +336,6 @@ public class EventInfo extends JPanel{
 							}, BorderLayout.CENTER);
 						}
 					}, BorderLayout.CENTER);
-					this.add(new JPanel(){
-						{
-							this.setBorder(new TitledBorder("Money"));
-							this.setLayout(new GridLayout(1,2));
-							this.add(new JLabel("Money"));
-							this.add(new JTextArea(){
-								{
-									this.setText(String.valueOf(stb.getMoney()));
-									this.setEditable(false);
-								}
-							});
-						}
-					}, BorderLayout.SOUTH);
 				}
 			});
 			break;
@@ -316,8 +352,8 @@ public class EventInfo extends JPanel{
 	
 	private void updateCurrentParty(){
 		for (int i = 0; i < PokemonTeam.MAX_PKM; i++){
-			this.pkmPBeforeButton[i].setPokemon(currentEvent.getParty().getListBefore().getPokemon(i));
-			this.pkmPAfterButton[i].setPokemon(currentEvent.getParty().getListAfter().getPokemon(i));
+			this.pkmPBeforeButton[i].setPokemon(currentEvent.getStateBefore().getTeam().getPokemon(i));
+			this.pkmPAfterButton[i].setPokemon(currentEvent.getStateAfter().getTeam().getPokemon(i));
 		}
 	}
 	
@@ -331,8 +367,14 @@ public class EventInfo extends JPanel{
 		this.pkmTypeLabel1.setType(currentPokemon.getBaseData().type1);
 		this.pkmTypePanel.add(pkmTypeLabel1);
 		this.pkmTypeLabel2.setType(currentPokemon.getBaseData().type2);
-		if (!currentPokemon.getBaseData().type2.isNone())
+		if (!currentPokemon.getBaseData().type2.isNone()){
 			this.pkmTypePanel.add(pkmTypeLabel2);
+		}
+		
+		//Forcing pkmTypePanel to repaint. For some reason it won't if I don't do this.
+		this.pkmTypePanel.revalidate();
+		this.pkmTypePanel.repaint();
+		
 		for (int i = 0; i < StatPack.STAT_N; i++){
 			this.txtEV[i].setText(String.valueOf(currentPokemon.EV.getStat(i)));
 			this.txtIV[i].setText(String.valueOf(currentPokemon.IV.getStat(i)));
@@ -376,7 +418,7 @@ public class EventInfo extends JPanel{
 		}
 		public void setPokemon(Pokemon pkm){
 			this.pkm = pkm;
-			this.setIcon(new PokemonIcon(this.pkm.getBaseData().getID()));
+			this.setIcon(new PokemonIcon(this.pkm.getBaseData().getID(), 48));
 			if (this.pkm.getBaseData().getID() == 0){
 				this.setEnabled(false);
 				this.setVisible(false);
@@ -390,6 +432,7 @@ public class EventInfo extends JPanel{
 	}
 	
 	private Controller c;
+	private JFrame parent;
 	
 	private Event currentEvent;
 	
@@ -399,22 +442,23 @@ public class EventInfo extends JPanel{
 	private JPanel pkmPartyAfter;
 	private EInfoPButton pkmPBeforeButton[];
 	private EInfoPButton pkmPAfterButton[];
+	private JTextField txtMoney;
 	
 	//Current Pokemon
 	private Pokemon currentPokemon;
-	private JTextArea txtLevel;
-	private JTextArea txtHeldItem;
-	private JTextArea txtExperience;
-	private JTextArea txtNature;
-	private JTextArea txtAbility;
+	private JTextField txtLevel;
+	private JTextField txtHeldItem;
+	private JTextField txtExperience;
+	private JTextField txtNature;
+	private JTextField txtAbility;
 	private JPanel pkmTypePanel;
 	private JPanel eventInfoPanel;
 	private PokemonTypeLabel pkmTypeLabel1;
 	private PokemonTypeLabel pkmTypeLabel2;
 	private JLabel pkmIconLabel;
 	private JLabel lblPokemonName;
-	private JTextArea txtStat[];
-	private JTextArea txtIV[];
-	private JTextArea txtEV[];
-	private JTextArea txtMove[];
+	private JTextField txtStat[];
+	private JTextField txtIV[];
+	private JTextField txtEV[];
+	private JTextField txtMove[];
 }

@@ -9,20 +9,23 @@ import javax.swing.JButton;
 
 import routingtool.components.EventType;
 import routingtool.gui.components.PokemonIcon;
+import routingtool.gui.eventadd.PokemonWindow.PokemonWindowType;
 import routingtool.pokemon.Pokemon;
 
 public class PokemonButton extends JButton{
 
 	private static final long serialVersionUID = 918187;
 	
-	public PokemonButton(final AddEventWindow aew, final EventTypePanel etp){
+	public PokemonButton(final AddEventWindow aew, final EventTypePanel etp, boolean onlyMovesEditable){
+		this.onlyMovesEditable = onlyMovesEditable;
 		this.pokemon = new Pokemon();
 		this.aew = aew;
 		this.etp = etp;
 		this.setParams();
 	}
 	
-	public PokemonButton(final AddEventWindow aew, final EventTypePanel etp, Pokemon pokemon){
+	public PokemonButton(final AddEventWindow aew, final EventTypePanel etp, Pokemon pokemon, boolean onlyMovesEditable){
+		this.onlyMovesEditable = onlyMovesEditable;
 		this.pokemon = pokemon;
 		this.aew = aew;
 		this.etp = etp;
@@ -37,7 +40,7 @@ public class PokemonButton extends JButton{
 		this.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				PokemonWindow pWindow = new PokemonWindow(aew, isTrainerButton(), pokemon);
+				PokemonWindow pWindow = new PokemonWindow(aew, getWindowType(), pokemon);
 				PokemonButton.this.pokemon = pWindow.showDialog();
 				PokemonButton.this.setIcon(new PokemonIcon(pokemon.getBaseData().getID()));
 				etp.updateComponents();
@@ -46,11 +49,12 @@ public class PokemonButton extends JButton{
 		});
 	}
 	
-	private boolean isTrainerButton(){
+	public PokemonWindowType getWindowType(){
+		if (onlyMovesEditable) return PokemonWindowType.PokemonParty;
 		EventType etype = etp.getEventType();
 		if (etype == EventType.DoubleTrainerBattle || etype == EventType.SingleTrainerBattle){
-			return true;
-		} else return false;
+			return PokemonWindowType.TrainerPokemon;
+		} else return PokemonWindowType.PokemonObtained;
 	}
 	
 	@Override
@@ -66,4 +70,5 @@ public class PokemonButton extends JButton{
 	private Pokemon pokemon;
 	private EventTypePanel etp;
 	private AddEventWindow aew;
+	private boolean onlyMovesEditable;
 }

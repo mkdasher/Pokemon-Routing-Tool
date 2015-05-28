@@ -9,8 +9,16 @@ public class Controller {
 		this.e = e;
 	}
 	
+	public GameVersion receiveGameVersion(){
+		return this.e.getGameVersion();
+	}
+	
+	public void setGameVersion(GameVersion version){
+		this.e.setGameVersion(version);
+	}
+	
 	public void requestLoadFile(String filePath) {
-		this.e.loadFile(filePath);
+		this.e.loadFile(filePath, this);
 	}
 
 	public void requestSaveFile(String filePath) {
@@ -19,6 +27,13 @@ public class Controller {
 	
 	public void addEvent(Event e){
 		this.e.addEvent(e);
+	}
+	
+	public void moveUp(int index) {
+		this.e.moveUp(index);
+	}
+	public void moveDown(int index) {
+		this.e.moveDown(index);
 	}
 	
 	public void deleteEvent(int index) {

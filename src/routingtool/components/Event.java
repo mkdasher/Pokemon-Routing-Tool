@@ -5,11 +5,12 @@ public abstract class Event {
 	
 	public Event(EventType eventType){
 		this.eventType = eventType;
-		this.party = new PokemonParty();
+		this.stateBefore = new State();
+		this.stateAfter = new State();
 	}
 	
 	/**
-	 * returns eventType
+	 * returns EventType
 	 * @return
 	 */
 	public EventType getEventType(){
@@ -18,44 +19,46 @@ public abstract class Event {
 	
 	
 	/**
-	 * updates PokemonParty.pokemonListAfter from the data obtained from the event.
-	 * Abstract method, implemented by it's subclasses.
+	 * updates StateAfter by taking the Event's data.
+	 * Abstract method, each subclass has it's own implementation.
 	 */
-	public abstract void updatePokemonListAfter();
+	public abstract void updateStateAfter();
 	
 	/**
-	 * updates PokemonParty.pokemonListBefore from previous Event on an Event list.
+	 * updates StateBefore from previous Event on an Event list.
 	 * @param previous
 	 */
-	public void updatePokemonListBefore(Event previous){
-		this.party.setListBefore(previous.getParty().getListAfter().getCopy());
+	public void updateStateBefore(Event previous){
+		this.stateBefore.setTeam(previous.getStateAfter().getTeam().getCopy());
+		this.stateBefore.setMoney(previous.getStateAfter().getMoney());
 	}
 	
 	/**
-	 * updates both lists of Pokemon party.
+	 * updates both States.
 	 * @param previous
 	 */
-	public void updatePokemonLists(Event previous){
-		this.updatePokemonListBefore(previous);
-		this.updatePokemonListAfter();
+	public void updateStates(Event previous){
+		this.updateStateBefore(previous);
+		this.updateStateAfter();
 	}
-	
+		
 	/**
-	 * sets Pokemon party
-	 * @param p
-	 */
-	public void setParty(PokemonParty p){
-        this.party = p;
-    }
-	
-	/**
-	 * gets Pokemon party
+	 * Gets State before the Event
 	 * @return
 	 */
-    public PokemonParty getParty(){
-        return this.party;
-    }
+	public State getStateBefore(){
+		return this.stateBefore;
+	}
+	
+	/**
+	 * Gets State after the Event
+	 * @return
+	 */
+	public State getStateAfter(){
+		return this.stateAfter;
+	}
 
-	private PokemonParty party;
 	private EventType eventType;
+	private State stateBefore;
+	private State stateAfter;
 }

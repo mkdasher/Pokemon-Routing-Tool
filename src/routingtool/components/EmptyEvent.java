@@ -7,9 +7,8 @@ public class EmptyEvent extends Event{
 	}
 
 	@Override
-	public void updatePokemonListAfter() {
+	public void updateStateAfter() {
 		// TODO Auto-generated method stub
-		
 	}
 
 }

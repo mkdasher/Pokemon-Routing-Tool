@@ -5,15 +5,16 @@ import java.util.Collections;
 import java.util.List;
 
 import routingtool.util.CSVFileReader;
+import routingtool.util.FileUtil;
 
 public class PokemonData extends Data {
 	public PokemonData(int n){
 		 super(n, findName(n));
 		 CSVFileReader fileReader = new CSVFileReader();
-		 String[] data = fileReader.getLine(n, "./res/database/pokemon.csv");
+		 String[] data = fileReader.getLine(n, FileUtil.POKEMON);
 		 this.type1 = new PokemonType(data[2]);
 		 this.type2 = new PokemonType(data[3]);
-		 data = fileReader.getLine(n, "./res/database/pokemonEV.csv");
+		 data = fileReader.getLine(n, FileUtil.POKEMON_BASESTATS);
 		 this.baseStat = new StatPack(
 				 Integer.parseInt(data[1]),
 				 Integer.parseInt(data[2]),
@@ -22,7 +23,7 @@ public class PokemonData extends Data {
 				 Integer.parseInt(data[5]),
 				 Integer.parseInt(data[6])
 				 );
-		 data = fileReader.getLine(n, "./res/database/pokemonExp.csv");
+		 data = fileReader.getLine(n, FileUtil.POKEMON_EXP);
 		 this.exp = Integer.parseInt(data[1]);
 		 this.EV = new StatPack(
 				 Integer.parseInt(data[2]),
@@ -32,7 +33,7 @@ public class PokemonData extends Data {
 				 Integer.parseInt(data[6]),
 				 Integer.parseInt(data[7])
 				 );
-		 data = fileReader.getLine(n, "./res/database/pokemonExpType.csv");
+		 data = fileReader.getLine(n, FileUtil.POKEMON_EXP_TYPE);
 		 this.expType = new ExperienceType(data[1]);
 	}
 	
@@ -52,7 +53,7 @@ public class PokemonData extends Data {
 	
 	public static String findName(int n){
 		CSVFileReader fileReader = new CSVFileReader();
-		String[] data = fileReader.getLine(n, "./res/database/pokemon.csv");
+		String[] data = fileReader.getLine(n, FileUtil.POKEMON);
 		return data[1];
 	}
 	

@@ -20,11 +20,13 @@ public class PokemonTypeLabel extends JLabel{
 	}
 	
 	public void setType(PokemonType ptype){
+		String path = "/image/pokemontypes/" + ptype.getName().toLowerCase() + ".png";
 		if (ptype.isNone()){
 			this.setIcon(new ImageIcon());	
+			return;
 		}
 		
-		Image img = new ImageIcon("./res/image/pokemontypes/" + ptype.getName().toLowerCase() + ".png").getImage();
+		Image img = new ImageIcon(PokemonIcon.class.getResource("/image/pokemontypes/" + ptype.getName().toLowerCase() + ".png")).getImage();
 		Image resizedImage = img.getScaledInstance(WIDTH, HEIGHT, java.awt.Image.SCALE_SMOOTH);
 		this.setIcon(new ImageIcon(resizedImage));
 	}

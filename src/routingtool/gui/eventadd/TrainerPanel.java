@@ -13,11 +13,10 @@ import routingtool.components.Trainer;
 
 @SuppressWarnings("serial")
 public class TrainerPanel extends JPanel{
-	public TrainerPanel(final AddEventWindow aew, final EventTypePanel etp, String titleBorder){
+	public TrainerPanel(final AddEventWindow aew, final EventTypePanel etp){
 		this.aew = aew;
 		this.etp = etp;
 		this.trainerPokemon = new TrainerPokemon();
-		this.setBorder(new TitledBorder(titleBorder));
 		this.setLayout(new BorderLayout());
 		this.add(new TrainerNameArea(),BorderLayout.NORTH);
 		this.add(trainerPokemon,BorderLayout.CENTER);
@@ -34,12 +33,17 @@ public class TrainerPanel extends JPanel{
 	
 	public void updateComponents(){
 		Trainer t = this.getTrainer();
+		this.updateComponents(t);
+	}
+	
+	public void updateComponents(Trainer t){
+		this.txtTrainerName.setText(t.getName());
 		for (int i =0; i < N_BUTTON; i++){
 			trainerPokemon.remove(0);
 		}
 		pokemonButton = new PokemonButton[N_BUTTON];
 		for (int i =0; i < N_BUTTON; i++){
-			pokemonButton[i] = new PokemonButton(aew, etp, t.getPokemonTeam().getPokemon(i));
+			pokemonButton[i] = new PokemonButton(aew, etp, t.getPokemonTeam().getPokemon(i), false);
 			trainerPokemon.add(pokemonButton[i]);
 			pokemonButton[i].setEnabled(i <= t.getPokemonTeam().size());
 		}
@@ -62,7 +66,7 @@ public class TrainerPanel extends JPanel{
 			this.setLayout(new GridLayout(2,3));
 			pokemonButton = new PokemonButton[N_BUTTON];
 			for (int i =0; i < N_BUTTON; i++){
-				pokemonButton[i] = new PokemonButton(aew, etp);
+				pokemonButton[i] = new PokemonButton(aew, etp, false);
 				this.add(pokemonButton[i]);
 				pokemonButton[i].setEnabled(false);
 			}

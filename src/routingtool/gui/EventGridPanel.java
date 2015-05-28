@@ -22,20 +22,23 @@ public class EventGridPanel extends JPanel{
 	
 	static final long serialVersionUID = 40643;
 	
-	@SuppressWarnings("serial")
 	final DefaultTableModel model = new DefaultTableModel(){
+		private static final long serialVersionUID = 4140756218591596256L;
+
 		@Override
 	    public boolean isCellEditable(int row, int column) {
 	       return false;
 	    }
 	}; 
+	
 	private final JTable table;
+	private JScrollPane pane;
 	
 	public EventGridPanel(final JFrame MainWindow, final Controller c){
 		this.setLayout(new BorderLayout());
 		this.setBorder(new TitledBorder("Event List"));
 		this.add(new ToolBar(MainWindow, c, this), BorderLayout.NORTH);
-		model.addColumn("Event Type"); 
+		model.addColumn("Event Type");
 		model.addColumn("Description");
 		this.table = new JTable(model){
 			private static final long serialVersionUID = 1L;
@@ -44,6 +47,7 @@ public class EventGridPanel extends JPanel{
 					private Thread changeThread;
 					@Override
 					public void eventListChange(final List<Event> eventList) {
+						int scrollVal = pane.getHorizontalScrollBar().getValue();
 						//we can only change if we can interrupt, else it's not neccesary
 						if (changeThread != null && changeThread.isAlive())
 							changeThread.interrupt();
@@ -63,6 +67,7 @@ public class EventGridPanel extends JPanel{
 								table.setRowSelectionInterval(eventList.size()-1, eventList.size()-1);
 							}
 						}).start();
+						pane.getHorizontalScrollBar().setValue(scrollVal);
 					}
 				});
 				
@@ -79,12 +84,13 @@ public class EventGridPanel extends JPanel{
 			}
 			
 		});
-		this.add(new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
+		pane = new JScrollPane(table,JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER) {
 			private static final long serialVersionUID = 1L;
 			{	
 				this.setPreferredSize(new Dimension(0, table.getRowHeight() * 6));
 			}
-		},BorderLayout.CENTER);
+		};
+		this.add(pane,BorderLayout.CENTER);
 	}
 
 	public int getSelectedIndex() {

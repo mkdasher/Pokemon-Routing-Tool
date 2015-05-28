@@ -74,5 +74,11 @@ public class StatPack {
     public int spa;
     public int spd;
     public int spe;
-    public static int STAT_N = 6;
+    public final static int STAT_N = 6;
+    public final static int HP = 0;
+    public final static int ATK = 1;
+    public final static int DEF = 2;
+    public final static int SPA = 3;
+    public final static int SPD = 4;
+    public final static int SPE = 5;
 }

@@ -22,10 +22,11 @@ public class PokemonObtained extends Event
 	}
 	
 	@Override
-	public void updatePokemonListAfter() {
-		PokemonTeam p = this.getParty().getListBefore().getCopy();
+	public void updateStateAfter() {
+		PokemonTeam p = this.getStateBefore().getTeam().getCopy();
 		p.addPokemon(gift);
-		this.getParty().setListAfter(p);
+		this.getStateAfter().setTeam(p);
+		this.getStateAfter().setMoney(this.getStateBefore().getMoney());
 	}
 	
 	@Override

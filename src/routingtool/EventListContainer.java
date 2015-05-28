@@ -1,9 +1,12 @@
 package routingtool;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import routingtool.components.Event;
+import routingtool.components.EventType;
+import routingtool.components.SingleTrainerBattle;
 import routingtool.util.Observable;
 import routingtool.observers.EventListContainerObserver;
 
@@ -12,15 +15,33 @@ public class EventListContainer extends Observable<EventListContainerObserver>{
 		this.eventList = new ArrayList<Event>();
 	}
 	
-	public void updateList(int index) {
+	public void updateList(int index){
 		if (index == 0){
-			this.eventList.get(0).updatePokemonListAfter();
+			this.eventList.get(0).getStateBefore().setMoney(INITIAL_MONEY);
+			this.eventList.get(0).updateStateAfter();
 			index++;
 		}
 		
+		//Last = previous Event from index that is not a Spinner Single Trainer Battle.
+		int last = index;
+		boolean lastFound = false;
+		while(last >= 0 && !lastFound){
+			last--;
+			if (this.eventList.get(last).getEventType() != EventType.SingleTrainerBattle){
+				lastFound = true;
+			}else if (!((SingleTrainerBattle) this.eventList.get(last)).isSpinner()){
+				lastFound = true;
+			}
+		}
+		
 		for (int i = index; i < this.eventList.size(); i++){
-			this.eventList.get(i).updatePokemonListBefore(this.eventList.get(i-1));
-			this.eventList.get(i).updatePokemonListAfter();
+			this.eventList.get(i).updateStateBefore(this.eventList.get(last));
+			this.eventList.get(i).updateStateAfter();
+			if (this.eventList.get(i).getEventType() != EventType.SingleTrainerBattle){
+				last = i;
+			}else if (!((SingleTrainerBattle) this.eventList.get(i)).isSpinner()){
+				last = i;
+			}
 		}
 	}
 	
@@ -33,6 +54,19 @@ public class EventListContainer extends Observable<EventListContainerObserver>{
 	public void deleteEvent(int n) {
 		this.eventList.remove(n);
 		this.updateList(n);
+		this.onEventListChange();
+	}
+	
+	public void moveUp(int index) {
+		if (index <= 0) return;
+		Collections.swap(eventList, index, index - 1);
+		this.updateList(index - 1);
+		this.onEventListChange();
+	}
+	public void moveDown(int index) {
+		if (index >= eventList.size()) return;
+		Collections.swap(eventList, index, index + 1);
+		this.updateList(index);
 		this.onEventListChange();
 	}
 	
@@ -79,4 +113,5 @@ public class EventListContainer extends Observable<EventListContainerObserver>{
 	}
 	
 	private List<Event> eventList;
+	private static final int INITIAL_MONEY = 3000;
 }

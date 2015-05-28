@@ -11,11 +11,21 @@ public class Trade extends Event{
 	}
 
 	@Override
-	public void updatePokemonListAfter() {
+	public void updateStateAfter() {
 		this.receivedPokemon.trade();
-		PokemonTeam p = this.getParty().getListBefore().getCopy();
+		PokemonTeam p = this.getStateBefore().getTeam().getCopy();
 		p.replacePokemon(receivedPokemon, sentIndex);
-		this.getParty().setListAfter(p);	
+		this.getStateAfter().setTeam(p);
+		
+		this.getStateAfter().setMoney(this.getStateBefore().getMoney());
+	}
+	
+	public int getSentIndex(){
+		return this.sentIndex;
+	}
+	
+	public Pokemon getReceivedPokemon(){
+		return receivedPokemon;
 	}
 
 	private Pokemon receivedPokemon;

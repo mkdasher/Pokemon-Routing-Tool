@@ -5,12 +5,13 @@ import java.util.Collections;
 import java.util.List;
 
 import routingtool.util.CSVFileReader;
+import routingtool.util.FileUtil;
 
 public class Move extends Data {
 	public Move(int n){
 		 super(n, findName(n));
 		 CSVFileReader fileReader = new CSVFileReader();
-		 String[] data = fileReader.getLine(n, "./res/database/moves.csv");
+		 String[] data = fileReader.getLine(n, FileUtil.MOVES);
 		 this.moveType = new PokemonType(data[2]);
 		 this.moveCategory = MoveCategory.fromString(data[3]);
 		 this.pp = Integer.parseInt(data[4]);
@@ -42,7 +43,7 @@ public class Move extends Data {
 	
 	public static String findName(int n){
 		CSVFileReader fileReader = new CSVFileReader();
-		String[] data = fileReader.getLine(n, "./res/database/moves.csv");
+		String[] data = fileReader.getLine(n, "moves.csv");
 		return data[1];
 	}
 	
@@ -57,6 +58,10 @@ public class Move extends Data {
 		}
 		Collections.sort(list);
 		return list;
+	}
+	
+	public boolean isNone(){
+		return (this.n == 0);
 	}
 	
 	public int getPower(){
@@ -95,4 +100,7 @@ public class Move extends Data {
 	private int power;
 	private int accuracy;
 	private int generation;
+	
+	//Move Constants
+	public static final int HIDDEN_POWER = 237;
 }

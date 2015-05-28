@@ -39,6 +39,10 @@ public class PokemonTeam {
 		return this.team.size() == 0;
 	}
 	
+	public Object[] toArray(){
+		return this.team.toArray();
+	}
+	
 	public Pokemon getPokemon(int i){
 		if (i < this.team.size()) return this.team.get(i);
 		return new Pokemon(); //empty Pokemon

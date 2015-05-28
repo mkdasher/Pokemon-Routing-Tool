@@ -6,11 +6,13 @@ import java.awt.GridLayout;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.border.TitledBorder;
 
 import routingtool.components.DoubleTrainerBattle;
 import routingtool.components.Event;
 import routingtool.components.EventType;
+import routingtool.components.PokemonTeam;
 import routingtool.components.PokemonUsed;
 import routingtool.components.PokemonUsedList;
 import routingtool.components.SingleTrainerBattle;
@@ -18,17 +20,18 @@ import routingtool.components.Trainer;
 import routingtool.gui.components.IntegerJTextField;
 
 public class DoubleTrainerPanel extends EventTypePanel{
-	public DoubleTrainerPanel(final AddEventWindow aew){
+	public DoubleTrainerPanel(final AddEventWindow aew, PokemonTeam myParty){
 		this.aew = aew;
-		this.setParams();
+		this.setParams(myParty);
 	}
 	
-	private void setParams(){
+	private void setParams(PokemonTeam myParty){
 		this.setBorder(new TitledBorder("Double Trainer Event"));
 		this.setLayout(new BorderLayout());
-		this.trainerPanel1 = new TrainerPanel(aew, this, "Trainer 1");
-		this.trainerPanel2 = new TrainerPanel(aew, this, "Trainer 2");
-		this.pokemonUsedPanel = new PokemonUsedPanel();
+		this.trainerPanel1 = new TrainerPanel(aew, this);
+		this.trainerPanel2 = new TrainerPanel(aew, this);
+		this.pokemonPartyPanel = new PokemonPartyPanel(aew, this, myParty);
+		this.pokemonUsedPanel = new PokemonUsedPanel(myParty);
 		this.money = new IntegerJTextField();
 		this.add(new JPanel(){
 			{
@@ -36,8 +39,14 @@ public class DoubleTrainerPanel extends EventTypePanel{
 				this.add(new JPanel(){
 					{
 						this.setLayout(new GridLayout(2,1));
-						this.add(trainerPanel1);
-						this.add(trainerPanel2);
+						this.add(new JTabbedPane(){
+							{
+								this.addTab("Trainer 1", trainerPanel1);
+								this.addTab("Trainer 2", trainerPanel2);
+								this.getTabComponentAt(0);
+							}
+						});
+						this.add(pokemonPartyPanel);
 					}
 				}, BorderLayout.CENTER);
 				this.add(new JPanel(){
@@ -50,7 +59,7 @@ public class DoubleTrainerPanel extends EventTypePanel{
 				}, BorderLayout.NORTH);
 			}
 		}, BorderLayout.WEST);
-		this.add(pokemonUsedPanel, BorderLayout.EAST);
+		this.add(pokemonUsedPanel, BorderLayout.CENTER);
 	}
 	
 	@Override
@@ -80,19 +89,13 @@ public class DoubleTrainerPanel extends EventTypePanel{
 			return null;
 		}
 		
-		//Create custom PokemonUsed and return event
-		PokemonUsedList pudl = new PokemonUsedList();
-		for (int i = 0; i < trainer1.getPokemonTeam().size(); i++){
-			PokemonUsed pud = new PokemonUsed(i, 1);
-			pud.setUsed(0);
-			pudl.add(pud);
-		}
-		for (int i = 0; i < trainer2.getPokemonTeam().size(); i++){
-			PokemonUsed pud = new PokemonUsed(i, 2);
-			pud.setUsed(0);
-			pudl.add(pud);
-		}
-		return new DoubleTrainerBattle(trainer1, trainer2, Integer.parseInt(money.getText()), pudl);
+		//Get PokemonUsedList
+		PokemonUsedList pudl = this.pokemonUsedPanel.getPokemonUsedList();
+		
+		//Get PokemonTeam
+		PokemonTeam pTeam = pokemonPartyPanel.getPokemonTeam();
+				
+		return new DoubleTrainerBattle(trainer1, trainer2, Integer.parseInt(money.getText()), pudl, pTeam);
 	}
 	
 	@Override
@@ -108,8 +111,20 @@ public class DoubleTrainerPanel extends EventTypePanel{
 		this.pokemonUsedPanel.updateComponents(this.trainerPanel2.getTrainer(), 2);
 	}
 	
+	@Override
+	public void updateFromEvent(Event event) {
+		DoubleTrainerBattle dtb = (DoubleTrainerBattle) event;
+		this.money.setText(String.valueOf(dtb.getMoney()));
+		this.trainerPanel1.updateComponents(dtb.getTrainer1());
+		this.trainerPanel2.updateComponents(dtb.getTrainer2());
+		this.pokemonUsedPanel.updateComponents(dtb.getPokemonUsedList());
+		this.pokemonUsedPanel.updateComponents(this.trainerPanel1.getTrainer(),1);
+		this.pokemonUsedPanel.updateComponents(this.trainerPanel2.getTrainer(),2);
+	}
+	
 	private TrainerPanel trainerPanel1;
 	private TrainerPanel trainerPanel2;
+	private PokemonPartyPanel pokemonPartyPanel;
 	private PokemonUsedPanel  pokemonUsedPanel;
 	private IntegerJTextField money;
 	private AddEventWindow aew;

@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import routingtool.util.CSVFileReader;
+import routingtool.util.FileUtil;
 
 public class Ability extends Data{
 	/**
@@ -14,7 +15,7 @@ public class Ability extends Data{
 	public Ability(int n){
 		super(n, findName(n));
 		CSVFileReader fileReader = new CSVFileReader();
-		String[] data = fileReader.getLine(n, "./res/database/abilities.csv");
+		String[] data = fileReader.getLine(n, FileUtil.ABILITIES);
 		this.description = data[2];
 	}
 	
@@ -30,7 +31,7 @@ public class Ability extends Data{
 	
 	private static String findName(int n){
 		CSVFileReader fileReader = new CSVFileReader();
-		String[] data = fileReader.getLine(n, "./res/database/abilities.csv");
+		String[] data = fileReader.getLine(n, FileUtil.ABILITIES);
 		return data[1];
 	}
 
@@ -58,4 +59,7 @@ public class Ability extends Data{
 	private String description;
 	
 	public static final int ABILITY_N = 164;
+	
+	//Ability constants
+	public static final int TECHNICIAN = 101;
 }

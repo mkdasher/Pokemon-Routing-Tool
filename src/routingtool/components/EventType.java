@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum EventType {
-	PokemonObtained, WildEncounter, SingleTrainerBattle, DoubleTrainerBattle, Trade, EmptyEvent;
+	SingleTrainerBattle, DoubleTrainerBattle, PokemonObtained, WildEncounter, ItemUsed, Trade, ModifyMoney, EmptyEvent;
 	
 	@Override
 	public String toString(){
@@ -12,8 +12,22 @@ public enum EventType {
 		else if (this == WildEncounter) return "Wild Encounter";
 		else if (this == SingleTrainerBattle) return "Single Trainer Battle";
 		else if (this == DoubleTrainerBattle) return "Double Trainer Battle";
+		else if (this == ItemUsed) return "Item Used";
 		else if (this == Trade) return "Trade";
+		else if (this == ModifyMoney) return "Modify Money";
 		else return "Empty Event";
+	}
+	
+	
+	public int index(){
+		if (this == SingleTrainerBattle) return 0;
+		else if (this == DoubleTrainerBattle) return 1;
+		else if (this == PokemonObtained) return 2;
+		else if (this == WildEncounter) return 3;
+		else if (this == ItemUsed) return 4;
+		else if (this == Trade) return 5;
+		else if (this == ModifyMoney) return 6;
+		else return 7; //Empty Event;
 	}
 	
 	/**
@@ -24,8 +38,10 @@ public enum EventType {
 		List<EventType> list = new ArrayList<EventType>();
 		list.add(SingleTrainerBattle);
 		list.add(DoubleTrainerBattle);
-		//list.add(WildEncounter);
 		list.add(PokemonObtained);
+		list.add(WildEncounter);
+		list.add(ItemUsed);
+		list.add(ModifyMoney);
 		//list.add(Trade);
 		return list;
 	}

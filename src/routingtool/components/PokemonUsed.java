@@ -30,9 +30,9 @@ public class PokemonUsed{
 		this.used[i] = false;
 	}
 	
-	public int pokemonUsedAmount(){
+	public int pokemonUsedAmount(int teamSize){
 		int amount = 0;
-		for (int i = 0; i < this.used.length; i++){
+		for (int i = 0; i < teamSize; i++){
 			if (this.used[i]) amount++;
 		}
 		return amount;
@@ -58,5 +58,8 @@ public class PokemonUsed{
 	 * - 2: Double Battle trainer 2
 	 */
 	private int trainerID;
+	public static final int TID_WILDENC = 0;
+	public static final int TID_TRAINER1 = 1;
+	public static final int TID_TRAINER2 = 2;
 	private boolean[] used;
 }

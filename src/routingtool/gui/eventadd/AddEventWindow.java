@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.util.List;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
@@ -19,6 +20,7 @@ import javax.swing.border.TitledBorder;
 import routingtool.Controller;
 import routingtool.components.Event;
 import routingtool.components.EventType;
+import routingtool.components.PokemonTeam;
 
 public class AddEventWindow extends JDialog{
 
@@ -29,12 +31,12 @@ public class AddEventWindow extends JDialog{
 	 * @param parent
 	 * @param c
 	 */
-	public AddEventWindow(JFrame parent, Controller c, boolean isInitialEvent){
+	public AddEventWindow(JFrame parent, Controller c, boolean isInitialEvent, PokemonTeam myParty){
 		super(parent, "New Event");
 		this.event = null;
 		this.c = c;
 		this.parent = parent;
-		this.setParams(isInitialEvent);
+		this.setParams(isInitialEvent, myParty);
 	}
 	
 	/**
@@ -44,20 +46,20 @@ public class AddEventWindow extends JDialog{
 	 * @param initial
 	 * @param is
 	 */
-	public AddEventWindow(JFrame parent, Controller c, Event initial, boolean isInitialEvent){
+	public AddEventWindow(JFrame parent, Controller c, Event event, boolean isInitialEvent){
 		super(parent, "Edit Event");
-		this.event = initial;
+		this.event = event;
 		this.c = c;
 		this.parent = parent;
-		this.setParams(isInitialEvent);
+		this.setParams(isInitialEvent, event.getStateBefore().getTeam());
 	}
 	
 	@SuppressWarnings("serial")
-	private void setParams(boolean isInitialEvent){
+	private void setParams(boolean isInitialEvent, PokemonTeam myParty){
 		this.setModal(true);
 		this.setLayout(new BorderLayout());
 		this.eTypePanel = new EventSelectionTypePanel(isInitialEvent);
-		this.eSettingsPanel = new EventSettingsPanel(this, isInitialEvent);
+		this.eSettingsPanel = new EventSettingsPanel(this, isInitialEvent, this.event, myParty);
 		this.getContentPane().add(this.eTypePanel, BorderLayout.NORTH);
 		this.getContentPane().add(this.eSettingsPanel, BorderLayout.CENTER);
 		this.add(new JPanel(){
@@ -68,7 +70,7 @@ public class AddEventWindow extends JDialog{
 				acceptButton.addActionListener(new ActionListener(){
 					@Override
 					public void actionPerformed(ActionEvent arg0) {
-						event = eSettingsPanel.getTopPanel().getEvent();
+						AddEventWindow.this.event = eSettingsPanel.getTopPanel().getEvent();
 						if (event != null) AddEventWindow.this.dispose();							
 					}
 				});
@@ -115,6 +117,10 @@ public class AddEventWindow extends JDialog{
 			else{
 				this.cmbEventType.setModel(new DefaultComboBoxModel(EventType.getList().toArray()));
 				this.cmbEventType.setEnabled(true);
+				this.cmbEventType.setSelectedIndex(0);
+				if (event != null){
+					this.cmbEventType.setSelectedIndex(findEvent(event.getEventType()));
+				}
 				this.cmbEventType.addItemListener(new ItemListener(){
 					@Override
 					public void itemStateChanged(ItemEvent arg0) {
@@ -123,6 +129,16 @@ public class AddEventWindow extends JDialog{
 				});
 			}
 			this.add(this.cmbEventType);
+		}
+		
+		private int findEvent(EventType etype){
+			List<EventType> list = EventType.getList();
+			for (int i = 0; i < list.size(); i++){
+				if (list.get(i) == etype){
+					return i;
+				}
+			}
+			return 0;
 		}
 		
 		public EventType getActiveEventType(){

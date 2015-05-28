@@ -28,7 +28,7 @@ public class MenuBar extends JMenuBar {
 			@Override
 			public void actionPerformed(ActionEvent event) {
 				JFileChooser fc = new JFileChooser();
-				FileFilter ff = new FileNameExtensionFilter("Pokemon Routing Tool File (.prf)", "prf");
+				FileFilter ff = new FileNameExtensionFilter("Pokemon Routing Tool File (.prt)", "prt");
 				fc.addChoosableFileFilter(ff);
 				fc.setFileFilter(ff);
 				int returnVal = fc.showOpenDialog(openMenuItem);
@@ -47,7 +47,8 @@ public class MenuBar extends JMenuBar {
 		saveMenuItem.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				JFileChooser fc = new JFileChooser();FileFilter ff = new FileNameExtensionFilter("Pokemon Routing Tool File (.prf)", "prf");
+				JFileChooser fc = new JFileChooser();
+				FileFilter ff = new FileNameExtensionFilter("Pokemon Routing Tool File (.prt)", "prt");
 				fc.addChoosableFileFilter(ff);
 				fc.setFileFilter(ff);
 				int returnVal = fc.showSaveDialog(saveMenuItem);
@@ -56,6 +57,20 @@ public class MenuBar extends JMenuBar {
 					return; //nope
 				}
 				filePath =  fc.getSelectedFile().getAbsolutePath();
+				
+				//Add extension by default if the user hasn't
+				if (fc.getFileFilter() instanceof FileNameExtensionFilter){
+					FileNameExtensionFilter fef = (FileNameExtensionFilter) fc.getFileFilter();
+					String[] extensions = fef.getExtensions();
+					boolean extensionFound = false;
+					for(String e : extensions){
+						if (filePath.endsWith( "." + e.toLowerCase())){
+							extensionFound = true;
+							break;
+						}
+					}
+					if (!extensionFound) filePath = filePath + "." + extensions[0].toLowerCase();
+				}
 				c.requestSaveFile(filePath);
 			}			
 		});

@@ -11,17 +11,17 @@ import javax.swing.JToolBar;
 
 import routingtool.Controller;
 import routingtool.components.Event;
+import routingtool.components.PokemonTeam;
 import routingtool.gui.eventadd.AddEventWindow;
-import routingtool.gui.eventadd.PokemonWindow;
 
 @SuppressWarnings("serial")
 public class ToolBar extends JToolBar{
 	
-	public static final ImageIcon ADD_ICON = new ImageIcon("./res/image/IconPlus.png");
-	public static final ImageIcon REMOVE_ICON = new ImageIcon("./res/image/IconMinus.png");
-	public static final ImageIcon EDIT_ICON = new ImageIcon("./res/image/IconEdit.png");
-	public static final ImageIcon MOVEUP_ICON = new ImageIcon("./res/image/IconMoveUp.png");
-	public static final ImageIcon MOVEDOWN_ICON = new ImageIcon("./res/image/IconMoveDown.png");
+	public static final ImageIcon ADD_ICON = new ImageIcon(ToolBar.class.getResource("/image/IconPlus.png"));
+	public static final ImageIcon REMOVE_ICON = new ImageIcon(ToolBar.class.getResource("/image/IconMinus.png"));
+	public static final ImageIcon EDIT_ICON = new ImageIcon(ToolBar.class.getResource("/image/IconEdit.png"));
+	public static final ImageIcon MOVEUP_ICON = new ImageIcon(ToolBar.class.getResource("/image/IconMoveUp.png"));
+	public static final ImageIcon MOVEDOWN_ICON = new ImageIcon(ToolBar.class.getResource("/image/IconMoveDown.png"));
 	
 	public ToolBar(final JFrame mainWindow, final Controller c, final EventGridPanel egp){
 		this.egp = egp;
@@ -33,7 +33,14 @@ public class ToolBar extends JToolBar{
 		addButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				AddEventWindow aew = new AddEventWindow(mainWindow, c, c.getEventListSize() == 0);
+				AddEventWindow aew;
+				if (c.getEventListSize() == 0){
+					aew = new AddEventWindow(mainWindow, c, true, new PokemonTeam());
+				}
+				else{
+					PokemonTeam pp = c.receiveEvent(c.getEventListSize()-1).getStateAfter().getTeam();
+					aew = new AddEventWindow(mainWindow, c, false, pp);
+				}
 				Event ev = aew.showDialog();
 				if (ev != null) c.addEvent(ev);
 			}			
@@ -78,11 +85,13 @@ public class ToolBar extends JToolBar{
 		JButton moveUpButton = new JButton();
 		moveUpButton.setToolTipText("Move up Event");
 		moveUpButton.setIcon(MOVEUP_ICON);	
-		moveUpButton.setEnabled(false);
+		moveUpButton.setEnabled(true);
 		moveUpButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+				int index = getSelectedIndex();
+				if (index <= 0) return;
+				c.moveUp(index);
 			}			
 		});
 		this.add(moveUpButton);
@@ -90,11 +99,13 @@ public class ToolBar extends JToolBar{
 		JButton moveDownButton = new JButton();
 		moveDownButton.setToolTipText("Move down Event");
 		moveDownButton.setIcon(MOVEDOWN_ICON);	
-		moveDownButton.setEnabled(false);
+		moveDownButton.setEnabled(true);
 		moveDownButton.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent event) {
-				
+				int index = getSelectedIndex();
+				if (index >= c.getEventListSize()) return;
+				c.moveDown(index);
 			}			
 		});
 		this.add(moveDownButton);

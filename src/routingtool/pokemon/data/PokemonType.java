@@ -19,11 +19,11 @@ public class PokemonType extends Data{
 				return i;
 			}
 		}
-		return 18; //unknown
+		return UNKNOWN;
 	}
 	
 	public boolean isNone(){
-		return this.getName().equals("None");
+		return (this.getID() == NONE);
 	}
 	
 	public PokemonType getCopy(){
@@ -48,5 +48,27 @@ public class PokemonType extends Data{
 		return list;
 	}
 	
+	//Pokemon types
+	public static final int FIGHTING = 0;
+	public static final int FLYING = 1;
+	public static final int POISON = 2;
+	public static final int GROUND = 3;
+	public static final int ROCK = 4;
+	public static final int BUG = 5;
+	public static final int GHOST = 6;
+	public static final int STEEL = 7;
+	public static final int FIRE = 8;
+	public static final int WATER = 9;
+	public static final int GRASS = 10;
+	public static final int ELECTRIC = 11;
+	public static final int PSYCHIC = 12;
+	public static final int ICE = 13;
+	public static final int DRAGON = 14;
+	public static final int DARK = 15;
+	public static final int NORMAL = 16;
+	public static final int NONE = 17;
+	public static final int UNKNOWN = 18;
+	
+	//Total amount
 	public static final int POKEMONTYPE_N = 18;
 }

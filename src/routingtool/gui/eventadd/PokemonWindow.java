@@ -2,7 +2,6 @@ package routingtool.gui.eventadd;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
@@ -30,30 +29,45 @@ import routingtool.pokemon.data.*;
 import routingtool.util.CSVFileReader;
 import routingtool.util.ComboBoxUtil;
 import routingtool.util.DataListUtil;
+import routingtool.util.FileUtil;
 import routingtool.gui.components.PokemonIcon;
 import routingtool.gui.components.IntegerJTextField;
 
 public class PokemonWindow extends JDialog{
+	private static final long serialVersionUID = -4515420509664013455L;
+	public enum PokemonWindowType{
+		TrainerPokemon, PokemonObtained, PokemonParty;
+	}
 	
-	public PokemonWindow(final Window parent, boolean isTrainer, Pokemon previous){
+	public PokemonWindow(final Window parent, PokemonWindowType type, Pokemon previous){
 		super(parent, "Pokemon");
+		this.type = type;
 		this.pokemon = previous;
 		this.parent = parent;
-		this.isTrainer = isTrainer;
 		this.setParams();
 		this.setPanels();
+		if (this.type == PokemonWindowType.PokemonParty){
+			setEditOnlyMoves();
+		}
+	}	
+	
+	/**
+	 * If this is PokemonParty Window type, everything should be read-only except for the moves.
+	 */
+	private void setEditOnlyMoves() {
+		this.cmbPokemon.setEnabled(false);
+		this.cmbNature.setEnabled(false);
+		this.cmbAbility.setEnabled(false);
+		this.txtLevel.setEnabled(false);
+		this.cmbHeldItem.setEnabled(true); //Held Item is also editable in set move only mode.
+		this.txtHP.setEnabled(false);
+		this.txtAtk.setEnabled(false);
+		this.txtDef.setEnabled(false);
+		this.txtSpa.setEnabled(false);
+		this.txtSpd.setEnabled(false);
+		this.txtSpe.setEnabled(false);
 	}
-	
-	public PokemonWindow(final Window parent, boolean isTrainer){
-		super(parent, "Pokemon");
-		this.pokemon = new Pokemon();
-		this.parent = parent;
-		this.isTrainer = isTrainer;
-		this.setParams();
-		this.setPanels();
-	}
-	
-	
+
 	private void setParams(){
 		this.setModal(true);
 		this.setLayout(new BorderLayout());
@@ -67,22 +81,22 @@ public class PokemonWindow extends JDialog{
 		this.txtLevel = new IntegerJTextField(3);
 		this.txtLevel.setText(String.valueOf(pokemon.getLevel()));
 		this.txtAtk = new IntegerJTextField(2);
-		this.txtAtk.setEnabled(!isTrainer);		
+		this.txtAtk.setEnabled(this.type == PokemonWindowType.PokemonObtained);		
 		this.txtAtk.setText(String.valueOf(pokemon.IV.atk));
 		this.txtDef = new IntegerJTextField(2);
-		this.txtDef.setEnabled(!isTrainer);
+		this.txtDef.setEnabled(this.type == PokemonWindowType.PokemonObtained);
 		this.txtDef.setText(String.valueOf(pokemon.IV.def));
 		this.txtSpa = new IntegerJTextField(2);
-		this.txtSpa.setEnabled(!isTrainer);
+		this.txtSpa.setEnabled(this.type == PokemonWindowType.PokemonObtained);
 		this.txtSpa.setText(String.valueOf(pokemon.IV.spa));
 		this.txtSpd = new IntegerJTextField(2);
-		this.txtSpd.setEnabled(!isTrainer);
+		this.txtSpd.setEnabled(this.type == PokemonWindowType.PokemonObtained);
 		this.txtSpd.setText(String.valueOf(pokemon.IV.spd));
 		this.txtSpe = new IntegerJTextField(2);
-		this.txtSpe.setEnabled(!isTrainer);
+		this.txtSpe.setEnabled(this.type == PokemonWindowType.PokemonObtained);
 		this.txtSpe.setText(String.valueOf(pokemon.IV.spe));
 		this.txtHP = new IntegerJTextField(2);
-		if(isTrainer){
+		if(this.type == PokemonWindowType.TrainerPokemon){
 			txtHP.getDocument().addDocumentListener(new DocumentListener(){
 				@Override
 				public void changedUpdate(DocumentEvent arg0){updateAllIVs();}
@@ -100,6 +114,8 @@ public class PokemonWindow extends JDialog{
 			});
 		}
 		this.txtHP.setText(String.valueOf(pokemon.IV.hp));
+		this.cmbAbility = new JComboBox<Ability>();
+		this.cmbAbility.setModel(new DefaultComboBoxModel(DataListUtil.abilityList));
 		this.cmbPokemon = new JComboBox<PokemonData>();
 		this.cmbPokemon.setModel(new DefaultComboBoxModel(DataListUtil.pokemonList));
 		this.cmbPokemon.setEnabled(true);
@@ -113,14 +129,12 @@ public class PokemonWindow extends JDialog{
 			}
 		});
 		this.cmbPokemon.setSelectedItem(ComboBoxUtil.getComboBoxItem(this.cmbPokemon, pokemon.getBaseData().getID()));
+		this.cmbAbility.setEnabled(true);
+		this.cmbAbility.setSelectedItem(ComboBoxUtil.getComboBoxItem(this.cmbAbility, pokemon.getAbility().getID()));
 		this.cmbNature = new JComboBox<Nature>();
 		this.cmbNature.setModel(new DefaultComboBoxModel(DataListUtil.natureList));
 		this.cmbNature.setEnabled(true);
 		this.cmbNature.setSelectedItem(ComboBoxUtil.getComboBoxItem(this.cmbNature, pokemon.getNature().getID()));
-		this.cmbAbility = new JComboBox<Ability>();
-		this.cmbAbility.setModel(new DefaultComboBoxModel(DataListUtil.abilityList));
-		this.cmbAbility.setEnabled(true);
-		this.cmbAbility.setSelectedItem(ComboBoxUtil.getComboBoxItem(this.cmbAbility, pokemon.getAbility().getID()));
 		this.cmbHeldItem = new JComboBox<PokemonItem>();
 		this.cmbHeldItem.setModel(new DefaultComboBoxModel(DataListUtil.itemList));
 		this.cmbHeldItem.setEnabled(true);
@@ -148,6 +162,11 @@ public class PokemonWindow extends JDialog{
 	
 	private void setPanels(){
 		this.getContentPane().add(new JPanel(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -1535519037381253670L;
+
 			{
 				this.setLayout(new BorderLayout());
 				this.setBorder(new TitledBorder("Pokemon"));
@@ -164,6 +183,11 @@ public class PokemonWindow extends JDialog{
 			}
 		}, BorderLayout.NORTH);
 		this.getContentPane().add(new JPanel(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 5220284243873950134L;
+
 			{
 				this.setLayout(new GridLayout(4,2));
 				this.add(new JLabel("Nature"));
@@ -177,6 +201,11 @@ public class PokemonWindow extends JDialog{
 			}
 		}, BorderLayout.CENTER);
 		this.getContentPane().add(new JPanel(){
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = -1063330546910324861L;
+
 			{
 				
 				this.setLayout(new BorderLayout());
@@ -275,7 +304,8 @@ public class PokemonWindow extends JDialog{
 									new StatPack(0),
 									(Nature)cmbNature.getSelectedItem(),
 									(Ability)cmbAbility.getSelectedItem(),
-									(PokemonItem)cmbHeldItem.getSelectedItem());
+									(PokemonItem)cmbHeldItem.getSelectedItem(),
+									false);
 								pokemon.setMoves(
 									(Move)cmbMove1.getSelectedItem(),
 									(Move)cmbMove2.getSelectedItem(),
@@ -306,7 +336,7 @@ public class PokemonWindow extends JDialog{
 		setVisible(true);
 		return this.pokemon;
 	}
-	
+		
 	private void updateAbilityModel(int n){
 		if (n == 0){
 			this.cmbAbility.setModel(new DefaultComboBoxModel(DataListUtil.abilityList));
@@ -323,7 +353,7 @@ public class PokemonWindow extends JDialog{
 		if (imax >= _NUMROWS) imax = _NUMROWS - 1;
 		while(imax >= imin){
 			imid = (imin + imax) / 2;
-			data = fileReader.getLine(imid, "./res/database/abilitiesByPokemon.csv");
+			data = fileReader.getLine(imid, FileUtil.ABILITIES_BY_PKM);
 			selectedID = Integer.parseInt(data[0]);
 			if (selectedID == n) break;
 			else if (selectedID < n) imin = imid + 1;
@@ -331,17 +361,17 @@ public class PokemonWindow extends JDialog{
 		}
 		while (selectedID == n && imid >= 0){
 			imid = imid - 1;
-			data = fileReader.getLine(imid, "./res/database/abilitiesByPokemon.csv");
+			data = fileReader.getLine(imid, FileUtil.ABILITIES_BY_PKM);
 			selectedID = Integer.parseInt(data[0]);
 		}
 		imid = imid + 1;
-		data = fileReader.getLine(imid, "./res/database/abilitiesByPokemon.csv");
+		data = fileReader.getLine(imid, FileUtil.ABILITIES_BY_PKM);
 		selectedID = Integer.parseInt(data[0]);
 		while (selectedID == n && imid < _NUMROWS){
 			if (Integer.parseInt(data[2]) == 0 && Integer.parseInt(data[1]) < 165) //if it's non hidden ability & it's not gen 6
 			list.add(new Ability(Integer.parseInt(data[1])));
 			imid = imid + 1;
-			data = fileReader.getLine(imid, "./res/database/abilitiesByPokemon.csv");
+			data = fileReader.getLine(imid, FileUtil.ABILITIES_BY_PKM);
 			selectedID = Integer.parseInt(data[0]);
 		}
 		this.cmbAbility.setModel(new DefaultComboBoxModel(list.toArray()));
@@ -364,7 +394,7 @@ public class PokemonWindow extends JDialog{
 	private IntegerJTextField txtSpd;
 	private IntegerJTextField txtSpe;
 	private JLabel lblPokemonID;
-	private boolean isTrainer;
 	private Pokemon pokemon;
 	private Window parent;
+	private PokemonWindowType type;
 }

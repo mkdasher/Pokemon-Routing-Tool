@@ -1,7 +1,10 @@
 package routingtool.gui.eventadd;
 
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 
+import javax.swing.JCheckBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.TitledBorder;
@@ -20,7 +23,8 @@ public class PokemonObtainedPanel extends EventTypePanel{
 	private void setParams(){
 		this.setBorder(new TitledBorder("Pokemon Obtained Event"));
 		this.setLayout(new BorderLayout());
-		this.pButton = new PokemonButton(aew, this);
+		this.pButton = new PokemonButton(aew, this, false);
+		this.chkOutsider = new JCheckBox();
 		this.add(new JPanel(){
 			{
 				this.setLayout(new BorderLayout());
@@ -29,6 +33,13 @@ public class PokemonObtainedPanel extends EventTypePanel{
 				this.add(new JPanel(), BorderLayout.EAST);
 			}
 		},BorderLayout.NORTH);
+		this.add(new JPanel(){
+			{
+				this.setLayout(new GridLayout(1,2));
+				this.add(new JLabel("Outsider"));
+				this.add(chkOutsider);
+			}
+		}, BorderLayout.CENTER);
 	}
 
 	@Override
@@ -37,7 +48,7 @@ public class PokemonObtainedPanel extends EventTypePanel{
 			JOptionPane.showMessageDialog(aew, "No Pokemon was chosen.", "Error", JOptionPane.ERROR_MESSAGE);
 			return null;
 		}
-		
+		pButton.getPokemon().setOutsider(this.chkOutsider.isSelected());
 		return new PokemonObtained(pButton.getPokemon());
 	}
 	
@@ -48,10 +59,26 @@ public class PokemonObtainedPanel extends EventTypePanel{
 	
 	@Override
 	public void updateComponents() {
-		// TODO Auto-generated method stub
 		
+	}
+	
+	@Override
+	public void updateFromEvent(Event event) {
+		PokemonObtained po = (PokemonObtained) event;
+		this.pButton = new PokemonButton(aew, this, po.getGift(), false);
+		this.remove(0);
+		this.add(new JPanel(){
+			{
+				this.setLayout(new BorderLayout());
+				this.add(pButton, BorderLayout.CENTER);
+				this.add(new JPanel(), BorderLayout.WEST);
+				this.add(new JPanel(), BorderLayout.EAST);
+			}
+		},BorderLayout.NORTH);
+		this.chkOutsider.setSelected(po.getGift().isOutsider());
 	}
 	
 	private AddEventWindow aew;
 	private PokemonButton pButton;
+	private JCheckBox chkOutsider;
 }

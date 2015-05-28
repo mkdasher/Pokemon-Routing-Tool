@@ -17,4 +17,6 @@ public abstract class EventTypePanel extends JPanel {
 	public abstract EventType getEventType();
 	
 	public abstract void updateComponents();
+	
+	public abstract void updateFromEvent(Event event);
 }
