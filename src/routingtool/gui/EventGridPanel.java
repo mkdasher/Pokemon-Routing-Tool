@@ -67,7 +67,7 @@ public class EventGridPanel extends JPanel{
 								table.setRowSelectionInterval(eventList.size()-1, eventList.size()-1);
 							}
 						}).start();
-						pane.getHorizontalScrollBar().setValue(scrollVal);
+						pane.getVerticalScrollBar().setValue(pane.getVerticalScrollBar().getMaximum());
 					}
 				});
 				

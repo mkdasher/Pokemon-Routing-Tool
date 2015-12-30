@@ -62,7 +62,7 @@ public class DoubleTrainerBattle extends TrainerBattle{
 	public String toString(){
 		return trainer1.getName() + " / " + trainer2.getName();
 	}
-	
+		
 	private Trainer trainer1;
 	private Trainer trainer2;
 }

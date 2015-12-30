@@ -57,6 +57,12 @@ public class PokemonItem extends Data{
 	private String itemPocket;
 	
 	//Constants of Items ID that might be used in the program
+	public static final int POTION = 17;
+	public static final int FULL_RESTORE = 23;
+	public static final int MAX_POTION = 24;
+	public static final int HYPER_POTION = 25;
+	public static final int SUPER_POTION = 26;
+	
 	public static final int HP_UP = 45;
 	public static final int PROTEIN = 46;
 	public static final int IRON = 47;
@@ -65,10 +71,18 @@ public class PokemonItem extends Data{
 	public static final int RARE_CANDY = 50;
 	public static final int ZINC = 52;
 	
-	public static final int CHARCOAL = 249;
+	public static final int DIRE_HIT = 57;
+	public static final int X_ATTACK = 57;
+	public static final int X_DEFEND = 58;
+	public static final int X_SPEED = 59;
+	public static final int X_ACCURACY = 60;
+	public static final int X_SPECIAL = 61;
+	public static final int X_SPDEF = 62;
 	
 	public static final int LUCKY_EGG = 231;
 	public static final int CHOICE_SPECS = 297;
 	public static final int EVERSTONE = 229;
 	public static final int LIGHT_BALL = 236;
+	public static final int MAGNET = 242;
+	public static final int CHARCOAL = 249;
 }

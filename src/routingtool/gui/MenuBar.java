@@ -21,7 +21,7 @@ public class MenuBar extends JMenuBar {
 
 	public MenuBar(final Controller c) {
 		JMenu menu = new JMenu("File");
-		menu.setMnemonic(KeyEvent.VK_J);
+		menu.setMnemonic(KeyEvent.VK_F);
 		final JMenuItem openMenuItem = new JMenuItem("Open");
 		openMenuItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_O, ActionEvent.CTRL_MASK));
 		openMenuItem.addActionListener(new ActionListener(){

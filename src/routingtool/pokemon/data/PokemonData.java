@@ -14,6 +14,7 @@ public class PokemonData extends Data {
 		 String[] data = fileReader.getLine(n, FileUtil.POKEMON);
 		 this.type1 = new PokemonType(data[2]);
 		 this.type2 = new PokemonType(data[3]);
+		 this.genderRate = GenderRate.fromInt(Integer.parseInt(data[4]));
 		 data = fileReader.getLine(n, FileUtil.POKEMON_BASESTATS);
 		 this.baseStat = new StatPack(
 				 Integer.parseInt(data[1]),
@@ -82,4 +83,5 @@ public class PokemonData extends Data {
     public PokemonType type1;
     public PokemonType type2;
     public ExperienceType expType;
+    public GenderRate genderRate;
 }

@@ -16,6 +16,10 @@ public class Nature extends Data{
 	
 	public Nature(String nat){
 		super(getTypeID(nat), nat);
+		if (n >= 0 && n < NATURE_N)
+        {
+            this.setNature(n);
+        }
 	}
 	
 	public static int getTypeID(String nat){

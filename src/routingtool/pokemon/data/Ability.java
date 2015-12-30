@@ -61,5 +61,6 @@ public class Ability extends Data{
 	public static final int ABILITY_N = 164;
 	
 	//Ability constants
+	public static final int THICK_FAT = 47;
 	public static final int TECHNICIAN = 101;
 }

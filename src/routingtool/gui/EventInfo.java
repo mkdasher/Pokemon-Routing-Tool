@@ -24,6 +24,7 @@ import routingtool.components.DoubleTrainerBattle;
 import routingtool.components.EmptyEvent;
 import routingtool.components.Event;
 import routingtool.components.EventType;
+import routingtool.components.PokemonObtained;
 import routingtool.components.PokemonTeam;
 import routingtool.components.PokemonUsed;
 import routingtool.components.SingleTrainerBattle;
@@ -340,10 +341,113 @@ public class EventInfo extends JPanel{
 			});
 			break;
 		case DoubleTrainerBattle:
-			
+			this.eventInfoPanel.add(new JPanel(){
+
+				private static final long serialVersionUID = 2245404665999799484L;
+				{
+					final DoubleTrainerBattle dtb = (DoubleTrainerBattle) currentEvent;
+					this.setLayout(new BorderLayout());
+					this.add(new JTabbedPane(){
+						{
+							this.addTab("Trainer 1", new JPanel(){
+								{
+									this.setLayout(new BorderLayout());
+									this.setBorder(new TitledBorder("Trainer"));
+									this.add(new JPanel(){
+										{
+											this.setLayout(new GridLayout(2,4));
+											this.add(new JLabel("Name"));
+											this.add(new JTextField(){
+												{
+													this.setText(dtb.getTrainer1().getName());
+													this.setEditable(false);
+												}
+											});
+											this.add(new JLabel("Money"));
+											this.add(new JTextField(){
+												{
+													this.setText(String.valueOf(dtb.getMoney()));
+													this.setEditable(false);
+												}
+											});
+										}
+									}, BorderLayout.NORTH);
+									this.add(new JPanel(){
+										{
+											this.setLayout(new GridLayout(2,3));
+											for (int i = 0; i < PokemonTeam.MAX_PKM; i++){
+												this.add(new EInfoPButton(dtb.getTrainer1().getPokemonTeam().getPokemon(i)));
+											}
+										}
+									}, BorderLayout.CENTER);
+								}
+							});
+							this.addTab("Trainer 2", new JPanel(){
+								{
+									this.setLayout(new BorderLayout());
+									this.setBorder(new TitledBorder("Trainer"));
+									this.add(new JPanel(){
+										{
+											this.setLayout(new GridLayout(2,4));
+											this.add(new JLabel("Name"));
+											this.add(new JTextField(){
+												{
+													this.setText(dtb.getTrainer2().getName());
+													this.setEditable(false);
+												}
+											});
+											this.add(new JLabel("Money"));
+											this.add(new JTextField(){
+												{
+													this.setText(String.valueOf(dtb.getMoney()));
+													this.setEditable(false);
+												}
+											});
+										}
+									}, BorderLayout.NORTH);
+									this.add(new JPanel(){
+										{
+											this.setLayout(new GridLayout(2,3));
+											for (int i = 0; i < PokemonTeam.MAX_PKM; i++){
+												this.add(new EInfoPButton(dtb.getTrainer2().getPokemonTeam().getPokemon(i)));
+											}
+										}
+									}, BorderLayout.CENTER);
+								}
+							});
+							this.getTabComponentAt(0);
+						}
+					});
+				}
+			});
+			break;
+		case WildEncounter:
+			this.eventInfoPanel.add(new JPanel(){
+				private static final long serialVersionUID = 2245404665999799484L;
+				{
+					final WildEncounterBattle we = (WildEncounterBattle) currentEvent;
+					this.add(new JPanel(){
+						{
+							this.setLayout(new GridLayout(2,3));
+							this.add(new EInfoPButton(we.getWildPokemon()));
+						}
+					}, BorderLayout.CENTER);
+				}
+			});
 			break;
 		case PokemonObtained:
-			
+			this.eventInfoPanel.add(new JPanel(){
+				private static final long serialVersionUID = 2245404665999799484L;
+				{
+					final PokemonObtained po = (PokemonObtained) currentEvent;
+					this.add(new JPanel(){
+						{
+							this.setLayout(new GridLayout(2,3));
+							this.add(new EInfoPButton(po.getGift()));
+						}
+					}, BorderLayout.CENTER);
+				}
+			});
 			break;
 		default:
 			break;
